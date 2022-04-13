@@ -1,17 +1,84 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class Square extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  render() {
+    return (
+      <div
+        style={{
+          width: this.props.size,
+          height: this.props.size,
+          backgroundColor: "blue",
+          border: "1px solid black",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "2em",
+        }}
+      >
+        <p style={{ color: "white" }}>{this.props.number}</p>
+      </div>
+    );
+  }
+}
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nbr: 4,
+      size: 100,
+      numArray: [],
+    };
+  }
+
+  componentDidMount() {
+    this.generateCells();
+  }
+
+  randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  generateCells = () => {
+    let arrayRandoms = [];
+    for (let i = 0; i < this.state.nbr * this.state.nbr; i++) {
+      if (i < 10) {
+        arrayRandoms.push(i);
+      } else {
+        arrayRandoms.push("");
+      }
+    }
+
+    arrayRandoms.sort(() => 0.5 - Math.random());
+
+    this.setState({ numArray: arrayRandoms });
+  };
+
+  render() {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <h1>Code secret</h1>
+        <button onClick={this.generateCells}>Reset</button>
+        <div
+          style={{
+            width: this.state.nbr * this.state.size + 25,
+            margin: "auto",
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
+          {this.state.numArray.map((num, index) => {
+            return <Square key={index} size={this.state.size} number={num} />;
+          })}
+        </div>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
